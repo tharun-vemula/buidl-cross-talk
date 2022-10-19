@@ -6,14 +6,15 @@ import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Burnable.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
+import "./InstituteCT.sol";
 
-contract Institute is ERC721, ERC721URIStorage, Ownable, ERC721Burnable {
+contract Institute is ERC721, ERC721URIStorage, Ownable, ERC721Burnable, InstituteCT {
     using Counters for Counters.Counter;
 
     Counters.Counter private _tokenIdCounter;
     mapping(address => bool) private students;
 
-    constructor(address[] memory studentAddr) ERC721("StudentToken", "STK") {
+    constructor(address[] memory studentAddr, address genericHandler_) ERC721("StudentToken", "STK") InstituteCT(genericHandler_) {
         for(uint i=0;i<studentAddr.length;i++) {
             approveStudent(studentAddr[i]);
         }
@@ -56,4 +57,8 @@ contract Institute is ERC721, ERC721URIStorage, Ownable, ERC721Burnable {
     {
         return super.tokenURI(tokenId);
     }
+
+    function supportsInterface(bytes4 interfaceId) 
+        public view virtual override(ERC721, ERC165, IERC165) 
+        returns (bool) {}
 }
